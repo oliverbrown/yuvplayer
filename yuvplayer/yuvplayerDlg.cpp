@@ -339,7 +339,7 @@ void CyuvplayerDlg::OnOpen()
 	CFileDialog	dlg(
 			TRUE, _T("YUV"), NULL,
 			OFN_HIDEREADONLY|OFN_OVERWRITEPROMPT|OFN_ALLOWMULTISELECT, 
-			_T("Image Files (YUV, RAW, IMG, ...)|*.YUV;*.RAW;*.IMG|")
+			_T("YUV Image Files (yuv...)|*.yuv|RGB Image Files (*.rgb)|*.rgb|Binary Files (*.bin)|*.bin|All Files (*.*)|*.*||")
 			);
 	if( IDOK != dlg.DoModal() )
 		return;	
