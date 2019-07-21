@@ -182,15 +182,17 @@ BEGIN
     END
     POPUP "&Size"
     BEGIN
-        MENUITEM "1080P (1920x1080)",           ID_SIZE_HD
-        MENUITEM "720P  (1280x720)",            ID_SIZE_SD
-        MENUITEM "&VGA   (640x480)",            ID_SIZE_VGA
+        MENUITEM "2160P (3440x2160)",           ID_SIZE_2160P
+        MENUITEM "1080P (1920x1080)",           ID_SIZE_1080P
+        MENUITEM "720P  (1280x720)",            ID_SIZE_720P
+        MENUITEM "480P  (720x480)",             ID_SIZE_480P, CHECKED
+        MENUITEM "&VGA  (640x480)",             ID_SIZE_VGA
         MENUITEM SEPARATOR
-        MENUITEM "&WVGA   (832x480)",           ID_SIZE_WVGA
+        MENUITEM "&WVGA (832x480)",             ID_SIZE_WVGA
         MENUITEM "WQVGA (416x240)",             ID_SIZE_WQVGA
         MENUITEM SEPARATOR
-        MENUITEM "&CIF      (352x288)",         ID_SIZE_CIF, CHECKED
-        MENUITEM "&QCIF    (176x144)",          ID_SIZE_QCIF
+        MENUITEM "&CIF  (352x288)",             ID_SIZE_CIF
+        MENUITEM "&QCIF (176x144)",             ID_SIZE_QCIF
         MENUITEM "SMALL (192x256)",             ID_SIZE_192X256
         MENUITEM SEPARATOR
         MENUITEM "C&ustom",                     ID_SIZE_CUSTOM
@@ -214,6 +216,7 @@ BEGIN
         MENUITEM "RGB32",                       ID_COLOR_RGB32
         MENUITEM "RGB24",                       ID_COLOR_RGB24
         MENUITEM "RGB16",                       ID_COLOR_RGB16
+        MENUITEM "BGR32",                       ID_COLOR_BGR32
     END
     POPUP "&Zoom"
     BEGIN

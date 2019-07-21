@@ -68,8 +68,10 @@ typedef struct
 
 #ifdef SUPPORT_PCRE
 static const size_info_t size_info[] = {
-	{ L"1080p", 1920, 1080, ID_SIZE_HD },
-	{ L"720p", 1280, 720, ID_SIZE_SD },
+	{ L"2160p", 3840, 2160, ID_SIZE_2160P },
+	{ L"1080p", 1920, 1080, ID_SIZE_1080P },
+	{ L"720p", 1280, 720, ID_SIZE_720P },
+	{ L"480p", 720, 480, ID_SIZE_480P },
 	{ L"wvga", 832, 480, ID_SIZE_WVGA },
 	{ L"wqvga", 416, 240, ID_SIZE_WQVGA },
 	{ L"vga", 640, 480, ID_SIZE_VGA },
@@ -82,11 +84,17 @@ static const size_info_t size_info[] = {
 #else
 // in near future, update me to PCRE
 static const size_info_t size_info[] = {
-	{ L"1920x1080", 1920, 1080, ID_SIZE_HD },
-	{ L"1080p", 1920, 1080, ID_SIZE_HD },
+	{ L"3840x2160", 3840, 2160, ID_SIZE_2160P },
+	{ L"2160p", 3840, 2160, ID_SIZE_2160P },
 
-	{ L"1280x720", 1280, 720, ID_SIZE_SD },
-	{ L"720p", 1280, 720, ID_SIZE_SD },
+	{ L"1920x1080", 1920, 1080, ID_SIZE_1080P },
+	{ L"1080p", 1920, 1080, ID_SIZE_1080P },
+
+	{ L"1280x720", 1280, 720, ID_SIZE_720P },
+	{ L"720p", 1280, 720, ID_SIZE_720P },
+
+	{ L"720x480", 720, 480, ID_SIZE_480P },
+	{ L"720p", 720, 480, ID_SIZE_480P },
 
 	{ L"832x480", 832, 480, ID_SIZE_WVGA },
 	{ L"wvga", 832, 480, ID_SIZE_WVGA },
@@ -333,7 +341,6 @@ void CyuvplayerDlg::OnOpen()
 			OFN_HIDEREADONLY|OFN_OVERWRITEPROMPT|OFN_ALLOWMULTISELECT, 
 			_T("Image Files (YUV, RAW, IMG, ...)|*.YUV;*.RAW;*.IMG|")
 			);
-
 	if( IDOK != dlg.DoModal() )
 		return;	
 
@@ -362,15 +369,25 @@ void CyuvplayerDlg::OnSizeChange(UINT nID )
 			menu->CheckMenuItem(i,	MF_UNCHECKED);
 
 	switch( nID ){
-		case ID_SIZE_HD:
-			menu->CheckMenuItem( ID_SIZE_HD,	MF_CHECKED);
+		case ID_SIZE_1080P:
+			menu->CheckMenuItem( ID_SIZE_1080P,	MF_CHECKED);
 			Resize( 1920, 1080 );
 			return;
 		
-		case ID_SIZE_SD:
-			menu->CheckMenuItem( ID_SIZE_SD,	MF_CHECKED);
-			Resize( 1280, 720 );
-			return;	
+		case ID_SIZE_2160P:
+			menu->CheckMenuItem(ID_SIZE_2160P, MF_CHECKED);
+			Resize(3840, 2160);
+			return;
+
+		case ID_SIZE_720P:
+			menu->CheckMenuItem(ID_SIZE_720P, MF_CHECKED);
+			Resize(1280, 720);
+			return;
+
+		case ID_SIZE_480P:
+			menu->CheckMenuItem(ID_SIZE_480P, MF_CHECKED);
+			Resize(720, 480);
+			return;
 
 		case ID_SIZE_VGA:
 			menu->CheckMenuItem( ID_SIZE_VGA,	MF_CHECKED);
@@ -581,6 +598,11 @@ void CyuvplayerDlg::OnColor(UINT nID )
 			m_color = RGB16;
 			break;
 
+		case ID_COLOR_BGR32:
+			menu->CheckMenuItem(ID_COLOR_BGR32, MF_CHECKED);
+			m_color = BGR32;
+			break;
+
 		// grey
 		default:
 			menu->CheckMenuItem( ID_COLOR_Y     , MF_CHECKED);
@@ -620,7 +642,7 @@ void CyuvplayerDlg::UpdateParameter()
         frame_size_uv *= 2; 
     }
 
-	if (m_color == RGB32)
+	if (m_color == RGB32 || m_color == BGR32)
 		frame_size = frame_size_y*4;
 	else if (m_color == RGB24)
 		frame_size = frame_size_y*3;
@@ -649,8 +671,11 @@ void CyuvplayerDlg::LoadFrame(void)
 
 	_lseeki64( fd, (__int64)cur*(__int64)frame_size, SEEK_SET );
 
-	if( m_color == RGB32 )
-		_read( fd, misc, frame_size_y*4 );
+	if (m_color == RGB32)
+		_read(fd, misc, frame_size_y * 4);
+
+	else if (m_color == BGR32)
+		_read(fd, misc, frame_size_y * 4);
 
 	else if( m_color == RGB24 )
 		_read( fd, misc, frame_size_y*3 );
@@ -861,7 +886,7 @@ void CyuvplayerDlg::yuv2rgb(void)
 		}
 	}
 
-	else if (m_color == RGB32 || m_color == RGB24 || m_color == RGB16) {
+	else if (m_color == RGB32 || m_color == BGR32 || m_color == RGB24 || m_color == RGB16) {
 		for( j = 0 ; j < height ; j++ ){
 			cur = line;
 			for( i = 0 ; i < width ; i++ ){
@@ -869,6 +894,11 @@ void CyuvplayerDlg::yuv2rgb(void)
 					r = misc[(j*width+i)*4+2];
 					g = misc[(j*width+i)*4+1];
 					b = misc[(j*width+i)*4+0];
+				}
+				else if (m_color == BGR32) {
+					r = misc[(j*width +i)*4];
+					g = misc[(j*width +i)*4+1];
+					b = misc[(j*width +i)*4+2];
 				}
 				else if (m_color == RGB24) {
 					r = misc[(j*width+i)*3+2];
@@ -1051,12 +1081,12 @@ BOOL CyuvplayerDlg::PreTranslateMessage(MSG* pMsg)
 
 			case 'h':
 			case 'H':
-				OnSizeChange(ID_SIZE_HD);
+				OnSizeChange(ID_SIZE_1080P);
 				return TRUE;
 
 			case 's':
 			case 'S':
-				OnSizeChange(ID_SIZE_SD);
+				OnSizeChange(ID_SIZE_480P);
 				return TRUE;
 
 			case 'c':
