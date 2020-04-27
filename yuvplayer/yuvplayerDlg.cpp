@@ -696,7 +696,7 @@ void CyuvplayerDlg::LoadFrame(void)
 	}
 
     else if ( m_color == PACKED_YUV444 )
-        _read( fd, misc, frame_size );
+        _read( fd, misc, frame_size_y * 3 );
 
 	else
 	{
