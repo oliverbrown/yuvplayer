@@ -56,7 +56,8 @@
 #define ID_COLOR_RGB24                  40012
 #define ID_COLOR_RGB16                  40013
 #define ID_COLOR_BGR32                  40014
-#define ID_COLOR_END                    40014
+#define ID_COLOR_PACKEDYUVA444          40015
+#define ID_COLOR_END                    40015
 #define ID_SIZE_START                   40020
 #define ID_SIZE_2160P                   40020
 #define ID_SIZE_1080P                   40021

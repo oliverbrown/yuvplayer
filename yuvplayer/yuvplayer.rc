@@ -202,20 +202,21 @@ BEGIN
         MENUITEM "YUV420 10bitLE",              ID_COLOR_YUV420_10LE
         MENUITEM "YUV420 10bitBE",              ID_COLOR_YUV420_10BE
         MENUITEM SEPARATOR
-        MENUITEM "YUV&444",                     ID_COLOR_YUV444
-        MENUITEM "YUV4&22",                     ID_COLOR_YUV422
-        MENUITEM "YUV42&0",                     ID_COLOR_YUV420, CHECKED
-        MENUITEM "&Y",                          ID_COLOR_Y
+        MENUITEM "YUV&444    Planar",           ID_COLOR_YUV444
+        MENUITEM "YUV4&22    Planar",           ID_COLOR_YUV422
+        MENUITEM "YUV42&0    Planar",           ID_COLOR_YUV420, CHECKED
+        MENUITEM "NV12 Semi-Planar",            ID_COLOR_NV12
+        MENUITEM "NV21 Semi-Planar",            ID_COLOR_NV21
         MENUITEM SEPARATOR
-        MENUITEM "YUV",                         ID_COLOR_PACKEDYUV444
-        MENUITEM "&UYVY",                       ID_COLOR_UYVY
-        MENUITEM "YUY&V",                       ID_COLOR_YUYV
-        MENUITEM "NV12",                        ID_COLOR_NV12
-        MENUITEM "NV21",                        ID_COLOR_NV21
+        MENUITEM "&Y",                          ID_COLOR_Y
+        MENUITEM "YUV    Packed",               ID_COLOR_PACKEDYUV444
+        MENUITEM "YUVA  Packed",                ID_COLOR_PACKEDYUVA444
+        MENUITEM "&UYVY Packed",                ID_COLOR_UYVY
+        MENUITEM "YUY&V Packed",                ID_COLOR_YUYV
         MENUITEM SEPARATOR
         MENUITEM "RGB32",                       ID_COLOR_RGB32
         MENUITEM "RGB24",                       ID_COLOR_RGB24
-        MENUITEM "RGB16",                       ID_COLOR_RGB16
+        MENUITEM "RGB16 565",                   ID_COLOR_RGB16
         MENUITEM "BGR32",                       ID_COLOR_BGR32
     END
     POPUP "&Zoom"

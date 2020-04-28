@@ -557,10 +557,15 @@ void CyuvplayerDlg::OnColor(UINT nID )
 			break;
 
 		// packed array
-        case ID_COLOR_PACKEDYUV444:
-            menu->CheckMenuItem( ID_COLOR_PACKEDYUV444,   MF_CHECKED);
-            m_color = PACKED_YUV444;
-            break;
+		case ID_COLOR_PACKEDYUV444:
+			menu->CheckMenuItem(ID_COLOR_PACKEDYUV444, MF_CHECKED);
+			m_color = PACKED_YUV444;
+			break;
+
+		case ID_COLOR_PACKEDYUVA444:
+			menu->CheckMenuItem(ID_COLOR_PACKEDYUVA444, MF_CHECKED);
+			m_color = PACKED_YUVA444;
+			break;
 
 		case ID_COLOR_NV21:
 			menu->CheckMenuItem( ID_COLOR_NV21,   MF_CHECKED);
@@ -695,9 +700,11 @@ void CyuvplayerDlg::LoadFrame(void)
 		_read( fd, misc, frame_size_y/2 );
 	}
 
-    else if ( m_color == PACKED_YUV444 )
-        _read( fd, misc, frame_size_y * 3 );
-
+	else if (m_color == PACKED_YUV444)
+		_read(fd, misc, frame_size_y * 3);
+	else if (m_color == PACKED_YUVA444)
+		_read(fd, misc, frame_size_y * 4);
+	
 	else
 	{
 		_read( fd, y, frame_size_y );
@@ -743,6 +750,22 @@ void CyuvplayerDlg::yuv2rgb(void)
             line += t_width<<2;
         }
     }
+	else if (m_color == PACKED_YUVA444) {
+		for (j = 0; j < height; j++) {
+			cur = line;
+			for (i = 0; i < width; i++) {
+
+				c = misc[(j * width + i) * 4] - 16;
+				d = misc[(j * width + i) * 4 + 1] - 128;
+				e = misc[(j * width + i) * 4 + 2] - 128;
+				
+				(*cur) = clip((298 * c + 409 * e + 128) >> 8); cur++;
+				(*cur) = clip((298 * c - 100 * d - 208 * e + 128) >> 8); cur++;
+				(*cur) = clip((298 * c + 516 * d + 128) >> 8); cur += 2;
+			}
+			line += t_width << 2;
+		}
+	}
 	else if( m_color == YUV444 ){
 		for( j = 0 ; j < height ; j++ ){
 			cur = line;
